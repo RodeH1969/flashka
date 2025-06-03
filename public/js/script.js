@@ -17,7 +17,7 @@ const attemptsLeftDisplay = document.getElementById('attempts-left');
 const result = document.getElementById('result');
 const resultMessage = document.getElementById('result-message');
 const shareBtn = document.getElementById('share-btn');
-const restartBtn = document.getElementById('restart-btn');
+const gameOverBox = document.getElementById('game-over-box');
 
 let cards = [];
 let flippedCards = [];
@@ -29,6 +29,7 @@ let gameOver = false;
 // Get gameId from URL query parameter (e.g., ?gameId=04/06/25)
 const urlParams = new URLSearchParams(window.location.search);
 const gameId = urlParams.get('gameId') || 'default';
+console.log('Game ID:', gameId);
 
 // Seed the random number generator with gameId
 Math.seedrandom(gameId);
@@ -144,16 +145,18 @@ function endGame(won) {
 
     resultMessage.textContent = resultText;
 
-    const message = `FLASHKA – GAME OVER 🔚\nYour score: ${score} ${scoreEmoji}\n\n🔹 10 = Perfect 🎯\n🔹 11–14 = Genius 🧠\n🔹 15–18 = Strong 💪\n🔹 19–21 = Good 👍\n🔹 22–23 = Well Done 🌟\n🔹 24 = Completed 🏆\n🔹 Unsolved in 24 = Better luck tomorrow 🙃\nGame ID: ${gameId}`;
+    const gameIdDisplay = gameId !== 'default' ? encodeURIComponent(gameId) : 'Not Set (Please use a game link)';
+    const message = `FLASHKA – GAME OVER 🔚\nYour score: ${score} ${scoreEmoji}\n1st to sms and score 18 or less wins $20 Dan Murphy's gift card 🍾\n\n🔹 10 = Perfect 🎯\n🔹 11–14 = Genius 🧠\n🔹 15–18 = Strong 💪\n🔹 19–21 = Good 👍\n🔹 22–23 = Well Done 🌟\n🔹 24 = Completed 🏆\n🔹 Unsolved in 24 = Better luck tomorrow 🙃\nGame ID: ${gameIdDisplay}`;
     const smsLink = `sms:+61459754708?body=${encodeURIComponent(message)}`;
     shareBtn.setAttribute('data-sms-link', smsLink);
+
+    // Display the same message in the game over box
+    gameOverBox.textContent = message;
 }
 
 shareBtn.addEventListener('click', () => {
     const smsLink = shareBtn.getAttribute('data-sms-link');
     window.location.href = smsLink;
 });
-
-restartBtn.addEventListener('click', initGame);
 
 initGame();

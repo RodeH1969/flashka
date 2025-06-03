@@ -11,14 +11,14 @@
     <div class="container">
         <h1>Flashka</h1>
         <div class="status">
-            <p class="attempts-had">Attempts Had: <span id="attempts">0</span></p>
-            <p class="attempts-left">Attempts Left: <span id="attempts-left">24</span></p>
+            <p class="attempts-had">Attempts Had: <span class="number" id="attempts">0</span></p>
+            <p class="attempts-left">Attempts Left: <span class="number" id="attempts-left">24</span></p>
         </div>
         <div class="game-board" id="game-board"></div>
         <div class="result" id="result" style="display: none;">
             <p id="result-message"></p>
+            <div id="game-over-box" class="game-over-box"></div>
             <button id="share-btn">Share via SMS</button>
-            <button id="restart-btn">Play Again</button>
         </div>
     </div>
     <script src="/js/script.js"></script>
