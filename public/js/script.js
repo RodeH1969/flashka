@@ -99,7 +99,6 @@ function checkMatch() {
         }
     } else {
         setTimeout(() => {
-            // Only unflip cards if game is not over
             if (!gameOver) {
                 card1.classList.remove('flipped');
                 card2.classList.remove('flipped');
@@ -116,13 +115,27 @@ function checkMatch() {
 function endGame(won) {
     gameOver = true;
     result.style.display = 'block';
-    if (won) {
-        resultMessage.textContent = `Congratulations! You matched all cards in ${attempts} attempts.`;
-    } else {
-        resultMessage.textContent = `Game Over! You used ${attempts} attempts.`;
-        cards.forEach(card => card.classList.add('flipped'));
-    }
     const score = won ? `${attempts}/24` : 'Unsolved/24';
+    let resultText = `Your score: ${score}\n`;
+    
+    if (!won) {
+        resultText += '🔹 Unsolved in 24 = Better luck tomorrow 🙃';
+    } else if (attempts === 10) {
+        resultText += '🔹 10 = Perfect 🎯';
+    } else if (attempts >= 11 && attempts <= 14) {
+        resultText += '🔹 11–14 = Genius 🧠';
+    } else if (attempts >= 15 && attempts <= 18) {
+        resultText += '🔹 15–18 = Strong 💪';
+    } else if (attempts >= 19 && attempts <= 21) {
+        resultText += '🔹 19–21 = Good 👍';
+    } else if (attempts >= 22 && attempts <= 23) {
+        resultText += '🔹 22–23 = Well Done 🌟';
+    } else if (attempts === 24) {
+        resultText += '🔹 24 = Completed 🏆';
+    }
+
+    resultMessage.textContent = resultText;
+
     const message = `FLASHKA – GAME OVER 🔚\nYour score: ${score}\n🔹 10 = Perfect 🎯\n🔹 11–14 = Genius 🧠\n🔹 15–18 = Strong 💪\n🔹 19–21 = Good 👍\n🔹 22–23 = Well Done 🌟\n🔹 24 = Completed 🏆\n🔹 Unsolved in 24 = Better luck tomorrow 🙃\nGame ID: ${gameId}`;
     const smsLink = `sms:+61459754708?body=${encodeURIComponent(message)}`;
     shareBtn.setAttribute('data-sms-link', smsLink);
