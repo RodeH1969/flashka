@@ -26,7 +26,7 @@ let attempts = 0;
 let maxAttempts = 24;
 let gameOver = false;
 
-// Get gameId from URL query parameter (e.g., ?gameId=123)
+// Get gameId from URL query parameter (e.g., ?gameId=04/06/25)
 const urlParams = new URLSearchParams(window.location.search);
 const gameId = urlParams.get('gameId') || 'default';
 
@@ -117,26 +117,34 @@ function endGame(won) {
     result.style.display = 'block';
     const score = won ? `${attempts}/24` : 'Unsolved/24';
     let resultText = `Your score: ${score}\n`;
-    
+    let scoreEmoji = '';
+
     if (!won) {
         resultText += '🔹 Unsolved in 24 = Better luck tomorrow 🙃';
+        scoreEmoji = '🙃';
     } else if (attempts === 10) {
         resultText += '🔹 10 = Perfect 🎯';
+        scoreEmoji = '🎯';
     } else if (attempts >= 11 && attempts <= 14) {
         resultText += '🔹 11–14 = Genius 🧠';
+        scoreEmoji = '🧠';
     } else if (attempts >= 15 && attempts <= 18) {
         resultText += '🔹 15–18 = Strong 💪';
+        scoreEmoji = '💪';
     } else if (attempts >= 19 && attempts <= 21) {
         resultText += '🔹 19–21 = Good 👍';
+        scoreEmoji = '👍';
     } else if (attempts >= 22 && attempts <= 23) {
         resultText += '🔹 22–23 = Well Done 🌟';
+        scoreEmoji = '🌟';
     } else if (attempts === 24) {
         resultText += '🔹 24 = Completed 🏆';
+        scoreEmoji = '🏆';
     }
 
     resultMessage.textContent = resultText;
 
-    const message = `FLASHKA – GAME OVER 🔚\nYour score: ${score}\n🔹 10 = Perfect 🎯\n🔹 11–14 = Genius 🧠\n🔹 15–18 = Strong 💪\n🔹 19–21 = Good 👍\n🔹 22–23 = Well Done 🌟\n🔹 24 = Completed 🏆\n🔹 Unsolved in 24 = Better luck tomorrow 🙃\nGame ID: ${gameId}`;
+    const message = `FLASHKA – GAME OVER 🔚\nYour score: ${score} ${scoreEmoji}\n\n🔹 10 = Perfect 🎯\n🔹 11–14 = Genius 🧠\n🔹 15–18 = Strong 💪\n🔹 19–21 = Good 👍\n🔹 22–23 = Well Done 🌟\n🔹 24 = Completed 🏆\n🔹 Unsolved in 24 = Better luck tomorrow 🙃\nGame ID: ${gameId}`;
     const smsLink = `sms:+61459754708?body=${encodeURIComponent(message)}`;
     shareBtn.setAttribute('data-sms-link', smsLink);
 }
