@@ -53,6 +53,12 @@ h1::after {
     font-weight: bold;
 }
 
+.number {
+    font-size: 2rem; /* Larger numbers for all versions */
+    font-weight: bold;
+    animation: pulse 1.5s infinite; /* Pulsing effect */
+}
+
 .game-board {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
@@ -115,7 +121,7 @@ h1::after {
     border: 2px solid #28a745;
     border-radius: 5px;
     font-size: 1rem;
-    white-space: pre-wrap; /* Preserves line breaks */
+    white-space: pre-wrap;
     text-align: left;
     max-width: 90%;
     margin-left: auto;
@@ -155,6 +161,9 @@ button:hover {
         font-size: 1rem; 
         gap: 25px; 
     }
+    .number {
+        font-size: 1.8rem; /* Slightly smaller for iPad */
+    }
     .game-board { 
         max-width: 900px; 
         gap: 7px; 
@@ -187,9 +196,7 @@ button:hover {
         margin: 2px 0; 
     }
     .number {
-        font-size: 1.5rem; 
-        font-weight: bold;
-        animation: pulse 1.5s infinite; 
+        font-size: 1.5rem; /* Adjusted for mobile */
     }
     .game-board { 
         max-width: 360px; 
