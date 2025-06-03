@@ -54,9 +54,9 @@ h1::after {
 }
 
 .number {
-    font-size: 2rem; /* Larger numbers for all versions */
+    font-size: 2rem;
     font-weight: bold;
-    animation: pulse 1.5s infinite; /* Pulsing effect */
+    animation: pulse 1.5s infinite;
 }
 
 .game-board {
@@ -128,6 +128,10 @@ h1::after {
     margin-right: auto;
 }
 
+.game-over-box .prize-message {
+    font-weight: bold;
+}
+
 button {
     padding: 10px 20px;
     font-size: 1rem;
@@ -162,7 +166,7 @@ button:hover {
         gap: 25px; 
     }
     .number {
-        font-size: 1.8rem; /* Slightly smaller for iPad */
+        font-size: 1.8rem;
     }
     .game-board { 
         max-width: 900px; 
@@ -196,7 +200,7 @@ button:hover {
         margin: 2px 0; 
     }
     .number {
-        font-size: 1.5rem; /* Adjusted for mobile */
+        font-size: 1.5rem; 
     }
     .game-board { 
         max-width: 360px; 

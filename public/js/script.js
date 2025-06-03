@@ -127,39 +127,41 @@ function endGame(won) {
     const score = won ? `${attempts}/24` : 'Unsolved/24';
     let resultText = `Your score: ${score}\n`;
     let scoreEmoji = '';
+    let resultLine = '';
 
     if (!won) {
-        resultText += '🔹 Unsolved in 24 = Better luck tomorrow 🙃';
+        resultLine = '🔹 Unsolved in 24 = Better luck tomorrow 🙃';
         scoreEmoji = '🙃';
     } else if (attempts === 10) {
-        resultText += '🔹 10 = Perfect 🎯';
+        resultLine = '🔹 10 = Perfect 🎯';
         scoreEmoji = '🎯';
     } else if (attempts >= 11 && attempts <= 14) {
-        resultText += '🔹 11–14 = Genius 🧠';
+        resultLine = '🔹 11–14 = Genius 🧠';
         scoreEmoji = '🧠';
     } else if (attempts >= 15 && attempts <= 18) {
-        resultText += '🔹 15–18 = Strong 💪';
+        resultLine = '🔹 15–18 = Strong 💪';
         scoreEmoji = '💪';
     } else if (attempts >= 19 && attempts <= 21) {
-        resultText += '🔹 19–21 = Good 👍';
+        resultLine = '🔹 19–21 = Good 👍';
         scoreEmoji = '👍';
     } else if (attempts >= 22 && attempts <= 23) {
-        resultText += '🔹 22–23 = Well Done 🌟';
+        resultLine = '🔹 22–23 = Well Done 🌟';
         scoreEmoji = '🌟';
     } else if (attempts === 24) {
-        resultText += '🔹 24 = Completed 🏆';
+        resultLine = '🔹 24 = Completed 🏆';
         scoreEmoji = '🏆';
     }
 
+    resultText += resultLine;
     resultMessage.textContent = resultText;
 
-    const gameIdDisplay = encodeURIComponent(gameId);
-    const message = `FLASHKA – GAME OVER 🔚\nYour score: ${score} ${scoreEmoji}\n1st to sms and score 18 or less wins $20 Dan Murphy's gift card 🍾\n\n🔹 10 = Perfect 🎯\n🔹 11–14 = Genius 🧠\n🔹 15–18 = Strong 💪\n🔹 19–21 = Good 👍\n🔹 22–23 = Well Done 🌟\n🔹 24 = Completed 🏆\n🔹 Unsolved in 24 = Better luck tomorrow 🙃\nGame ID: ${gameIdDisplay}`;
+    const prizeMessage = "1st to score <19 and SMS officials wins $20 Dan's card 🍾";
+    const message = `FLASHKA – GAME OVER 🔚\nYour score: ${score} ${scoreEmoji}\n**${prizeMessage}**\n\n🔹 10 = Perfect 🎯\n🔹 11–14 = Genius 🧠\n🔹 15–18 = Strong 💪\n🔹 19–21 = Good 👍\n🔹 22–23 = Well Done 🌟\n🔹 24 = Completed 🏆\n🔹 Unsolved in 24 = Better luck tomorrow 🙃\nGame ID: ${gameId}`;
     const smsLink = `sms:+61459754708?body=${encodeURIComponent(message)}`;
     shareBtn.setAttribute('data-sms-link', smsLink);
 
-    // Display the same message in the game over box
-    gameOverBox.textContent = message;
+    // Display the message in the game over box with HTML for styling
+    gameOverBox.innerHTML = message.replace(prizeMessage, `<span class="prize-message">${prizeMessage}</span>`);
 }
 
 shareBtn.addEventListener('click', () => {
