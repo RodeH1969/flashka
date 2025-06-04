@@ -33,7 +33,9 @@ h1::after {
     content: '⚡';
     color: #ffc107;
     font-size: 3.75rem;
-    animation: flash 3s infinite;
+    animation-name: flash, colorFlash; /* Split animation properties */
+    animation-duration: 3s, 3s;
+    animation-iteration-count: infinite, infinite;
 }
 
 .instructions {
@@ -65,7 +67,7 @@ h1::after {
 .number {
     font-size: 2rem;
     font-weight: bold;
-    animation: pulse 1.5s infinite;
+    animation: flash 3s infinite;
 }
 
 .game-board {
@@ -168,6 +170,13 @@ button:hover {
     100% { opacity: 1; }
 }
 
+@keyframes colorFlash {
+    0% { color: #ffc107; } /* Orange */
+    33% { color: #007bff; } /* Blue */
+    66% { color: #ffff00; } /* Yellow */
+    100% { color: #ffc107; } /* Back to Orange */
+}
+
 @media (max-width: 1024px) {
     h1 {
         font-size: 5rem;
@@ -224,7 +233,7 @@ button:hover {
         font-size: 1.5rem;
     }
     .game-board {
-        grid-template-columns: repeat(4, 1fr); /* Change to 4 columns */
+        grid-template-columns: repeat(4, 1fr);
         max-width: 360px;
         gap: 5px;
     }
@@ -310,4 +319,8 @@ button:hover {
         font-size: 0.7rem;
     }
     button {
-        padding: 5px 10
+        padding: 5px 10px;
+        font-size: 0.7rem;
+        margin: 2px;
+    }
+}
