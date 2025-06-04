@@ -1,3 +1,5 @@
+console.log('Script loaded');
+
 const images = [
     '/image_1.png',
     '/image_2.png',
@@ -11,6 +13,8 @@ const images = [
     '/image_10.png'
 ];
 
+console.log('Images array defined:', images);
+
 const gameBoard = document.getElementById('game-board');
 const attemptsDisplay = document.getElementById('attempts');
 const attemptsLeftDisplay = document.getElementById('attempts-left');
@@ -20,6 +24,24 @@ const timesPlayedDisplay = document.getElementById('times-played');
 const shareBtn = document.getElementById('share-btn');
 const restartBtn = document.getElementById('restart-btn');
 const gameOverBox = document.getElementById('game-over-box');
+
+console.log('DOM elements retrieved:');
+console.log('gameBoard:', gameBoard);
+console.log('attemptsDisplay:', attemptsDisplay);
+console.log('attemptsLeftDisplay:', attemptsLeftDisplay);
+console.log('result:', result);
+console.log('resultMessage:', resultMessage);
+console.log('timesPlayedDisplay:', timesPlayedDisplay);
+console.log('shareBtn:', shareBtn);
+console.log('restartBtn:', restartBtn);
+console.log('gameOverBox:', gameOverBox);
+
+if (!shareBtn) {
+    console.error('shareBtn is null, cannot attach event listener');
+}
+if (!restartBtn) {
+    console.error('restartBtn is null, cannot attach event listener');
+}
 
 let cards = [];
 let flippedCards = [];
@@ -44,10 +66,14 @@ console.log('Game ID:', gameId);
 
 // Seed the random number generator with gameId
 Math.seedrandom(gameId);
+console.log('Math.seedrandom initialized');
 
 function initGame() {
     playCount++;
+    console.log('Initializing game, playCount:', playCount);
+    console.log('Game board element:', gameBoard);
     const cardImages = [...images, ...images];
+    console.log('Card images array length:', cardImages.length);
     cardImages.sort(() => Math.random() - 0.5);
 
     for (let i = 0; i < cardImages.length; i++) {
@@ -59,8 +85,15 @@ function initGame() {
         }
     }
 
+    if (!gameBoard) {
+        console.error('gameBoard is null, cannot proceed with rendering cards');
+        return;
+    }
+
     gameBoard.innerHTML = '';
+    console.log('Cleared game board');
     cards = cardImages.map((src, index) => {
+        console.log(`Creating card ${index} with src: ${src}`);
         const card = document.createElement('div');
         card.classList.add('card');
         card.dataset.image = src;
@@ -70,10 +103,19 @@ function initGame() {
                 <div class="card-back"><img src="${src}" alt="Card"></div>
             </div>
         `;
+        const img = card.querySelector('img');
+        img.onerror = () => console.error(`Failed to load image for card ${index}: ${src}`);
+        img.onload = () => console.log(`Successfully loaded image for card ${index}: ${src}`);
         card.addEventListener('click', () => flipCard(card));
         gameBoard.appendChild(card);
         return card;
     });
+    console.log('Cards created and appended:', cards.length);
+
+    if (!attemptsDisplay || !attemptsLeftDisplay) {
+        console.error('attemptsDisplay or attemptsLeftDisplay is null');
+        return;
+    }
 
     flippedCards = [];
     matchedPairs = 0;
@@ -83,6 +125,7 @@ function initGame() {
     attemptsLeftDisplay.textContent = maxAttempts;
     result.style.display = 'none';
     timesPlayedDisplay.textContent = '';
+    console.log('Game initialized successfully');
 }
 
 function flipCard(card) {
@@ -169,11 +212,22 @@ function endGame(won) {
         .replace(timesPlayedMessage, `Times played: <span style="color: red; font-weight: bold;">${playCount}</span>`);
 }
 
-shareBtn.addEventListener('click', () => {
-    const smsLink = shareBtn.getAttribute('data-sms-link');
-    window.location.href = smsLink;
-});
+console.log('Calling initGame');
+initGame(); // Call initGame before attaching event listeners
 
-restartBtn.addEventListener('click', initGame);
+console.log('Attaching event listener to shareBtn');
+if (shareBtn) {
+    shareBtn.addEventListener('click', () => {
+        const smsLink = shareBtn.getAttribute('data-sms-link');
+        window.location.href = smsLink;
+    });
+}
 
-initGame();
+console.log('Attaching event listener to restartBtn');
+if (restartBtn) {
+    restartBtn.addEventListener('click', initGame);
+} else {
+    console.warn('restartBtn is null, event listener not attached');
+}
+
+console.log('Script completed');
