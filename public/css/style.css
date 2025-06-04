@@ -19,7 +19,7 @@ body {
 
 h1 {
     font-family: 'Bangers', cursive;
-    font-size: 2.5rem;
+    font-size: 6.25rem; /* 2.5rem × 2.5 */
     color: #28a745;
     margin: 3px 0;
     display: flex;
@@ -32,7 +32,16 @@ h1::before,
 h1::after {
     content: '⚡';
     color: #ffc107;
-    font-size: 1.5rem;
+    font-size: 3.75rem; /* 1.5rem × 2.5 */
+    animation: flash 3s infinite;
+}
+
+.instructions {
+    font-size: 2rem;
+    color: black;
+    font-weight: bold;
+    font-style: italic;
+    margin: 3px 0;
 }
 
 .status {
@@ -153,13 +162,22 @@ button:hover {
     100% { transform: scale(1); }
 }
 
+@keyframes flash {
+    0% { opacity: 1; }
+    50% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
 @media (max-width: 1024px) {
     h1 {
-        font-size: 2rem;
+        font-size: 5rem; /* 2rem × 2.5 */
     }
     h1::before,
     h1::after {
-        font-size: 1.3rem;
+        font-size: 3.25rem; /* 1.3rem × 2.5 */
+    }
+    .instructions {
+        font-size: 1.8rem;
     }
     .status {
         font-size: 1rem;
@@ -186,10 +204,13 @@ button:hover {
 
 @media (max-width: 767px) {
     h1 {
-        font-size: 2.2rem;
+        font-size: 5.5rem; /* 2.2rem × 2.5 */
     }
     h1::before,
     h1::after {
+        font-size: 3.75rem; /* 1.5rem × 2.5 */
+    }
+    .instructions {
         font-size: 1.5rem;
     }
     .status {
@@ -224,12 +245,15 @@ button:hover {
         padding: 6px;
     }
     h1 {
-        font-size: 1.8rem;
+        font-size: 4.5rem; /* Adjusted for smaller height */
         margin: 2px 0;
     }
     h1::before,
     h1::after {
-        font-size: 1.1rem;
+        font-size: 2.75rem;
+    }
+    .instructions {
+        font-size: 1.3rem;
     }
     .status {
         font-size: 0.9rem;
@@ -257,11 +281,14 @@ button:hover {
 
 @media (max-height: 700px) and (max-width: 767px) {
     h1 {
-        font-size: 1.8rem;
+        font-size: 4rem;
         margin: 1px 0;
     }
     h1::before,
     h1::after {
+        font-size: 2.5rem;
+    }
+    .instructions {
         font-size: 1.2rem;
     }
     .status {
