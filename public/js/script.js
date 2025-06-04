@@ -53,19 +53,83 @@ if (!gameId) {
 }
 console.log('Game ID:', gameId);
 
-// Initial seed for logging purposes
+// Seed the random number generator with gameId
 Math.seedrandom(gameId);
-console.log('Math.seedrandom initialized globally');
+console.log('Math.seedrandom initialized');
+
+// Save game state to sessionStorage
+function saveGameState() {
+    const state = {
+        cards: cards.map(card => ({
+            image: card.dataset.image,
+            flipped: card.classList.contains('flipped'),
+            matched: card.classList.contains('matched')
+        })),
+        flippedCards: flippedCards.map(card => cards.indexOf(card)),
+        matchedPairs,
+        attempts,
+        gameOver,
+        playCount
+    };
+    sessionStorage.setItem('flashkaGameState', JSON.stringify(state));
+    console.log('Game state saved:', state);
+}
+
+// Load game state from sessionStorage
+function loadGameState() {
+    const savedState = sessionStorage.getItem('flashkaGameState');
+    if (savedState) {
+        const state = JSON.parse(savedState);
+        console.log('Loaded game state:', state);
+
+        // Restore game state
+        matchedPairs = state.matchedPairs;
+        attempts = state.attempts;
+        gameOver = state.gameOver;
+        playCount = state.playCount;
+
+        // Rebuild cards
+        gameBoard.innerHTML = '';
+        cards = state.cards.map((cardData, index) => {
+            const card = document.createElement('div');
+            card.classList.add('card');
+            card.dataset.image = cardData.image;
+            card.innerHTML = `
+                <div class="card-inner">
+                    <div class="card-front"></div>
+                    <div class="card-back"><img src="${cardData.image}" alt="Card"></div>
+                </div>
+            `;
+            const img = card.querySelector('img');
+            img.onerror = () => console.error(`Failed to load image for card ${index}: ${cardData.image}`);
+            img.onload = () => console.log(`Successfully loaded image for card ${index}: ${cardData.image}`);
+            card.addEventListener('click', () => flipCard(card));
+            if (cardData.flipped) card.classList.add('flipped');
+            if (cardData.matched) card.classList.add('matched');
+            gameBoard.appendChild(card);
+            return card;
+        });
+
+        // Restore flippedCards
+        flippedCards = state.flippedCards.map(index => cards[index]);
+
+        // Update UI
+        attemptsDisplay.textContent = attempts;
+        attemptsLeftDisplay.textContent = maxAttempts - attempts;
+        result.style.display = gameOver ? 'block' : 'none';
+        if (gameOver) {
+            endGame(matchedPairs === images.length); // Re-run endGame to restore result UI
+        }
+    } else {
+        console.log('No saved game state, initializing new game');
+        initGame();
+    }
+}
 
 function initGame() {
     playCount++;
     console.log('Initializing game, playCount:', playCount);
     console.log('Game board element:', gameBoard);
-
-    // Reset the random seed to ensure consistent shuffling
-    Math.seedrandom(gameId);
-    console.log('Math.seedrandom reset for this game instance');
-
     const cardImages = [...images, ...images];
     console.log('Card images array length:', cardImages.length);
     cardImages.sort(() => Math.random() - 0.5);
@@ -120,6 +184,7 @@ function initGame() {
     if (result) {
         result.style.display = 'none';
     }
+    saveGameState();
     console.log('Game initialized successfully');
 }
 
@@ -132,12 +197,13 @@ function flipCard(card) {
 
     card.classList.add('flipped');
     flippedCards.push(card);
+    saveGameState();
 
     if (flippedCards.length === 2) {
         attempts++;
         attemptsDisplay.textContent = attempts;
         attemptsLeftDisplay.textContent = maxAttempts - attempts;
-        console.log('Attempts:', attempts, 'Matched pairs:', matchedPairs);
+        saveGameState();
         checkMatch();
     }
 }
@@ -150,9 +216,8 @@ function checkMatch() {
         card2.classList.add('matched');
         matchedPairs++;
         flippedCards = [];
-        console.log('Match found, matchedPairs:', matchedPairs);
+        saveGameState();
         if (matchedPairs === images.length) {
-            console.log('All pairs matched, calling endGame(true)');
             endGame(true);
         }
     } else {
@@ -161,12 +226,12 @@ function checkMatch() {
                 card1.classList.remove('flipped');
                 card2.classList.remove('flipped');
                 flippedCards = [];
+                saveGameState();
             }
         }, 1000);
     }
 
     if (attempts >= maxAttempts && matchedPairs < images.length) {
-        console.log('Max attempts reached, calling endGame(false)');
         endGame(false);
     }
 }
@@ -181,11 +246,8 @@ function endGame(won) {
     }
     console.log('Setting result display to block');
     result.style.display = 'block';
-    // Force a reflow to ensure the DOM updates
-    void result.offsetHeight;
     console.log('Result div display style after setting:', result.style.display);
     console.log('Result div computed style:', window.getComputedStyle(result).display);
-    console.log('Result div innerHTML:', result.innerHTML);
 
     // Delay DOM manipulations to ensure the result div is rendered
     setTimeout(() => {
@@ -271,20 +333,22 @@ function endGame(won) {
             console.log('restartBtn found, computed display:', window.getComputedStyle(restartBtn).display);
             restartBtn.addEventListener('click', () => {
                 console.log('Restart button clicked');
+                sessionStorage.removeItem('flashkaGameState'); // Clear saved state
                 initGame();
             });
         } else {
             console.warn('restartBtn is still null after requery in endGame');
         }
 
+        saveGameState();
         console.log('Delayed endGame completed successfully');
-    }, 200);
+    }, 100);
 
     console.log('endGame scheduled successfully');
 }
 
-console.log('Calling initGame');
-initGame();
+console.log('Loading game state');
+loadGameState();
 
 console.log('Attaching event listener to shareBtn');
 if (shareBtn) {
