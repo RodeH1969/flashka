@@ -4,6 +4,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const gameLinkOutput = document.getElementById('game-link');
     const imageUploadForm = document.getElementById('image-upload-form');
     const uploadStatus = document.getElementById('upload-status');
+    const shuffleBtn = document.getElementById('shuffle-btn');
+    const shuffleStatus = document.getElementById('shuffle-status');
 
     // Generate game link functionality
     generateBtn.addEventListener('click', () => {
@@ -60,6 +62,29 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             uploadStatus.textContent = 'Failed to upload images. Please try again.';
             uploadStatus.style.color = 'red';
+        }
+    });
+
+    // Shuffle image positions functionality
+    shuffleBtn.addEventListener('click', async () => {
+        shuffleStatus.textContent = 'Shuffling image positions...';
+        shuffleStatus.style.color = '#28a745';
+
+        try {
+            const response = await fetch('/shuffle-images', {
+                method: 'POST'
+            });
+
+            if (response.ok) {
+                const result = await response.text();
+                shuffleStatus.textContent = result;
+                shuffleStatus.style.color = '#28a745';
+            } else {
+                throw new Error('Shuffle failed');
+            }
+        } catch (error) {
+            shuffleStatus.textContent = 'Failed to shuffle images. Please try again.';
+            shuffleStatus.style.color = 'red';
         }
     });
 });

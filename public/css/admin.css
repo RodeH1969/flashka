@@ -24,7 +24,7 @@ h1 {
     margin-bottom: 20px;
 }
 
-.generate-game, .upload-images {
+.generate-game, .upload-images, .shuffle-images {
     margin-bottom: 30px;
 }
 
@@ -72,15 +72,10 @@ p {
     color: #333;
 }
 
-#game-link {
+#game-link, #upload-status, #shuffle-status {
     color: #28a745;
     font-weight: bold;
     word-wrap: break-word;
-}
-
-#upload-status {
-    color: #28a745;
-    font-weight: bold;
 }
 
 @media (max-width: 767px) {
