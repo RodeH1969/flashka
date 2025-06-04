@@ -19,28 +19,17 @@ const gameBoard = document.getElementById('game-board');
 const attemptsDisplay = document.getElementById('attempts');
 const attemptsLeftDisplay = document.getElementById('attempts-left');
 const result = document.getElementById('result');
-const resultMessage = document.getElementById('result-message');
-const timesPlayedDisplay = document.getElementById('times-played');
 const shareBtn = document.getElementById('share-btn');
-const restartBtn = document.getElementById('restart-btn');
-const gameOverBox = document.getElementById('game-over-box');
 
-console.log('DOM elements retrieved:');
+console.log('Initial DOM elements retrieved:');
 console.log('gameBoard:', gameBoard);
 console.log('attemptsDisplay:', attemptsDisplay);
 console.log('attemptsLeftDisplay:', attemptsLeftDisplay);
 console.log('result:', result);
-console.log('resultMessage:', resultMessage);
-console.log('timesPlayedDisplay:', timesPlayedDisplay);
 console.log('shareBtn:', shareBtn);
-console.log('restartBtn:', restartBtn);
-console.log('gameOverBox:', gameOverBox);
 
 if (!shareBtn) {
     console.error('shareBtn is null, cannot attach event listener');
-}
-if (!restartBtn) {
-    console.error('restartBtn is null, cannot attach event listener');
 }
 
 let cards = [];
@@ -64,14 +53,19 @@ if (!gameId) {
 }
 console.log('Game ID:', gameId);
 
-// Seed the random number generator with gameId
+// Initial seed for logging purposes
 Math.seedrandom(gameId);
-console.log('Math.seedrandom initialized');
+console.log('Math.seedrandom initialized globally');
 
 function initGame() {
     playCount++;
     console.log('Initializing game, playCount:', playCount);
     console.log('Game board element:', gameBoard);
+
+    // Reset the random seed to ensure consistent shuffling
+    Math.seedrandom(gameId);
+    console.log('Math.seedrandom reset for this game instance');
+
     const cardImages = [...images, ...images];
     console.log('Card images array length:', cardImages.length);
     cardImages.sort(() => Math.random() - 0.5);
@@ -123,13 +117,16 @@ function initGame() {
     gameOver = false;
     attemptsDisplay.textContent = attempts;
     attemptsLeftDisplay.textContent = maxAttempts;
-    result.style.display = 'none';
-    timesPlayedDisplay.textContent = '';
+    if (result) {
+        result.style.display = 'none';
+    }
     console.log('Game initialized successfully');
 }
 
 function flipCard(card) {
+    console.log('Flipping card:', card);
     if (gameOver || flippedCards.includes(card) || flippedCards.length >= 2 || card.classList.contains('matched')) {
+        console.log('Cannot flip card: game over or invalid state');
         return;
     }
 
@@ -140,18 +137,22 @@ function flipCard(card) {
         attempts++;
         attemptsDisplay.textContent = attempts;
         attemptsLeftDisplay.textContent = maxAttempts - attempts;
+        console.log('Attempts:', attempts, 'Matched pairs:', matchedPairs);
         checkMatch();
     }
 }
 
 function checkMatch() {
+    console.log('Checking match, flippedCards:', flippedCards);
     const [card1, card2] = flippedCards;
     if (card1.dataset.image === card2.dataset.image) {
         card1.classList.add('matched');
         card2.classList.add('matched');
         matchedPairs++;
         flippedCards = [];
+        console.log('Match found, matchedPairs:', matchedPairs);
         if (matchedPairs === images.length) {
+            console.log('All pairs matched, calling endGame(true)');
             endGame(true);
         }
     } else {
@@ -165,69 +166,138 @@ function checkMatch() {
     }
 
     if (attempts >= maxAttempts && matchedPairs < images.length) {
+        console.log('Max attempts reached, calling endGame(false)');
         endGame(false);
     }
 }
 
 function endGame(won) {
+    console.log('Entering endGame, won:', won);
     gameOver = true;
-    result.style.display = 'block';
-    const score = won ? `${attempts}/29` : 'Unsolved/29';
-    let resultText = `Your score: ${score}\n`;
-    let scoreEmoji = '';
-    let resultLine = '';
 
-    if (!won) {
-        resultLine = '🔹 Unsolved in 29 = Better luck tomorrow 🙃';
-        scoreEmoji = '🙃';
-    } else if (attempts >= 10 && attempts <= 15) {
-        resultLine = '🔹 10–15 = Genius 🧠';
-        scoreEmoji = '🧠';
-    } else if (attempts >= 16 && attempts <= 19) {
-        resultLine = '🔹 16–19 = Elite 💪';
-        scoreEmoji = '💪';
-    } else if (attempts >= 20 && attempts <= 24) {
-        resultLine = '🔹 20–24 = Strong 👍';
-        scoreEmoji = '👍';
-    } else if (attempts >= 25 && attempts <= 29) {
-        resultLine = '🔹 25–29 = Good 🌟';
-        scoreEmoji = '🌟';
+    if (!result) {
+        console.error('result element is null');
+        return;
     }
+    console.log('Setting result display to block');
+    result.style.display = 'block';
+    // Force a reflow to ensure the DOM updates
+    void result.offsetHeight;
+    console.log('Result div display style after setting:', result.style.display);
+    console.log('Result div computed style:', window.getComputedStyle(result).display);
+    console.log('Result div innerHTML:', result.innerHTML);
 
-    resultText += resultLine;
-    resultMessage.textContent = resultText;
+    // Delay DOM manipulations to ensure the result div is rendered
+    setTimeout(() => {
+        console.log('Delayed DOM manipulations in endGame');
 
-    // Display times played with the number in red and bold
-    timesPlayedDisplay.innerHTML = `Times played: <span style="color: red; font-weight: bold;">${playCount}</span>`;
+        // Requery DOM elements
+        const resultMessage = document.getElementById('result-message');
+        const timesPlayedDisplay = document.getElementById('times-played');
+        const shareBtn = document.getElementById('share-btn');
+        const restartBtn = document.getElementById('restart-btn');
+        const gameOverBox = document.getElementById('game-over-box');
 
-    const prizeMessage = "1st to score <19 and SMS officials wins $20 Dan's card 🍾";
-    const timesPlayedMessage = `Times played: ${playCount}`;
-    const message = `FLASHKA – GAME OVER 🔚\nYour score: ${score} ${scoreEmoji}\n${timesPlayedMessage}\n**${prizeMessage}**\n\n🔹 10–15 = Genius 🧠\n🔹 16–19 = Elite 💪\n🔹 20–24 = Strong 👍\n🔹 25–29 = Good 🌟\n🔹 Unsolved in 29 = Better luck tomorrow 🙃\nGame ID: ${gameId}`;
-    const smsLink = `sms:+61459754708?body=${encodeURIComponent(message)}`;
-    shareBtn.setAttribute('data-sms-link', smsLink);
+        console.log('Requeried DOM elements in endGame:');
+        console.log('result:', result);
+        console.log('resultMessage:', resultMessage);
+        console.log('timesPlayedDisplay:', timesPlayedDisplay);
+        console.log('shareBtn:', shareBtn);
+        console.log('restartBtn:', restartBtn);
+        console.log('gameOverBox:', gameOverBox);
 
-    // Display the message in the game over box with HTML for styling
-    gameOverBox.innerHTML = message
-        .replace(prizeMessage, `<span class="prize-message">${prizeMessage}</span>`)
-        .replace(timesPlayedMessage, `Times played: <span style="color: red; font-weight: bold;">${playCount}</span>`);
+        const score = won ? `${attempts}/29` : 'Unsolved/29';
+        let resultText = `Your score: ${score}\n`;
+        let scoreEmoji = '';
+        let resultLine = '';
+
+        console.log('Calculating score and result line');
+        if (!won) {
+            resultLine = '🔹 Unsolved in 29 = Better luck tomorrow 🙃';
+            scoreEmoji = '🙃';
+        } else if (attempts >= 10 && attempts <= 15) {
+            resultLine = '🔹 10–15 = Genius 🧠';
+            scoreEmoji = '🧠';
+        } else if (attempts >= 16 && attempts <= 19) {
+            resultLine = '🔹 16–19 = Elite 💪';
+            scoreEmoji = '💪';
+        } else if (attempts >= 20 && attempts <= 24) {
+            resultLine = '🔹 20–24 = Strong 👍';
+            scoreEmoji = '👍';
+        } else if (attempts >= 25 && attempts <= 29) {
+            resultLine = '🔹 25–29 = Good 🌟';
+            scoreEmoji = '🌟';
+        }
+
+        resultText += resultLine;
+        console.log('Setting result message:', resultText);
+        if (resultMessage) {
+            resultMessage.textContent = resultText;
+        } else {
+            console.warn('resultMessage element is null, proceeding anyway');
+        }
+
+        console.log('Setting times played display');
+        if (timesPlayedDisplay) {
+            timesPlayedDisplay.innerHTML = `Times played: <span style="color: red; font-weight: bold;">${playCount}</span>`;
+        } else {
+            console.warn('timesPlayedDisplay element is null, proceeding anyway');
+        }
+
+        const prizeMessage = "1st to score <19 and SMS officials wins $20 Dan's card 🍾";
+        const timesPlayedMessage = `Times played: ${playCount}`;
+        const message = `FLASHKA – GAME OVER 🔚\nYour score: ${score} ${scoreEmoji}\n${timesPlayedMessage}\n**${prizeMessage}**\n\n🔹 10–15 = Genius 🧠\n🔹 16–19 = Elite 💪\n🔹 20–24 = Strong 👍\n🔹 25–29 = Good 🌟\n🔹 Unsolved in 29 = Better luck tomorrow 🙃\nGame ID: ${gameId}`;
+        console.log('SMS message constructed:', message);
+
+        console.log('Setting data-sms-link on shareBtn');
+        if (shareBtn) {
+            shareBtn.setAttribute('data-sms-link', `sms:+61459754708?body=${encodeURIComponent(message)}`);
+        } else {
+            console.warn('shareBtn element is null, proceeding anyway');
+        }
+
+        console.log('Setting game over box content');
+        if (gameOverBox) {
+            gameOverBox.innerHTML = message
+                .replace(prizeMessage, `<span class="prize-message">${prizeMessage}</span>`)
+                .replace(timesPlayedMessage, `Times played: <span style="color: red; font-weight: bold;">${playCount}</span>`);
+        } else {
+            console.warn('gameOverBox element is null, proceeding anyway');
+        }
+
+        // Attach restartBtn event listener
+        console.log('Attaching event listener to restartBtn in endGame');
+        if (restartBtn) {
+            console.log('restartBtn found, computed display:', window.getComputedStyle(restartBtn).display);
+            restartBtn.addEventListener('click', () => {
+                console.log('Restart button clicked');
+                initGame();
+            });
+        } else {
+            console.warn('restartBtn is still null after requery in endGame');
+        }
+
+        console.log('Delayed endGame completed successfully');
+    }, 200);
+
+    console.log('endGame scheduled successfully');
 }
 
 console.log('Calling initGame');
-initGame(); // Call initGame before attaching event listeners
+initGame();
 
 console.log('Attaching event listener to shareBtn');
 if (shareBtn) {
     shareBtn.addEventListener('click', () => {
+        console.log('Share button clicked');
         const smsLink = shareBtn.getAttribute('data-sms-link');
-        window.location.href = smsLink;
+        console.log('SMS link:', smsLink);
+        if (smsLink) {
+            window.location.href = smsLink;
+        } else {
+            console.error('data-sms-link attribute not set on shareBtn');
+        }
     });
-}
-
-console.log('Attaching event listener to restartBtn');
-if (restartBtn) {
-    restartBtn.addEventListener('click', initGame);
-} else {
-    console.warn('restartBtn is null, event listener not attached');
 }
 
 console.log('Script completed');

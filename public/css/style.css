@@ -154,23 +154,23 @@ button:hover {
 }
 
 @media (max-width: 1024px) {
-    h1 { 
-        font-size: 2rem; 
+    h1 {
+        font-size: 2rem;
     }
     h1::before,
     h1::after {
         font-size: 1.3rem;
     }
-    .status { 
-        font-size: 1rem; 
-        gap: 25px; 
+    .status {
+        font-size: 1rem;
+        gap: 25px;
     }
     .number {
         font-size: 1.8rem;
     }
-    .game-board { 
-        max-width: 900px; 
-        gap: 7px; 
+    .game-board {
+        max-width: 900px;
+        gap: 7px;
     }
     .result {
         margin-top: 8px;
@@ -178,33 +178,33 @@ button:hover {
     .game-over-box {
         font-size: 0.9rem;
     }
-    button { 
-        padding: 8px 16px; 
-        font-size: 0.9rem; 
+    button {
+        padding: 8px 16px;
+        font-size: 0.9rem;
     }
 }
 
 @media (max-width: 767px) {
-    h1 { 
-        font-size: 2.2rem; 
+    h1 {
+        font-size: 2.2rem;
     }
     h1::before,
     h1::after {
-        font-size: 1.5rem; 
+        font-size: 1.5rem;
     }
-    .status { 
-        font-size: 0.8rem; 
-        flex-direction: row; 
-        align-items: center; 
-        gap: 15px; 
-        margin: 2px 0; 
+    .status {
+        font-size: 0.8rem;
+        flex-direction: row;
+        align-items: center;
+        gap: 15px;
+        margin: 2px 0;
     }
     .number {
-        font-size: 1.5rem; 
+        font-size: 1.5rem;
     }
-    .game-board { 
-        max-width: 360px; 
-        gap: 5px; 
+    .game-board {
+        max-width: 360px;
+        gap: 5px;
     }
     .result {
         margin-top: 6px;
@@ -212,10 +212,10 @@ button:hover {
     .game-over-box {
         font-size: 0.8rem;
     }
-    button { 
-        padding: 6px 12px; 
-        font-size: 0.8rem; 
-        margin: 3px; 
+    button {
+        padding: 6px 12px;
+        font-size: 0.8rem;
+        margin: 3px;
     }
 }
 
