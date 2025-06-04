@@ -19,7 +19,7 @@ body {
 
 h1 {
     font-family: 'Bangers', cursive;
-    font-size: 6.25rem; /* 2.5rem × 2.5 */
+    font-size: 6.25rem;
     color: #28a745;
     margin: 3px 0;
     display: flex;
@@ -32,7 +32,7 @@ h1::before,
 h1::after {
     content: '⚡';
     color: #ffc107;
-    font-size: 3.75rem; /* 1.5rem × 2.5 */
+    font-size: 3.75rem;
     animation: flash 3s infinite;
 }
 
@@ -170,11 +170,11 @@ button:hover {
 
 @media (max-width: 1024px) {
     h1 {
-        font-size: 5rem; /* 2rem × 2.5 */
+        font-size: 5rem;
     }
     h1::before,
     h1::after {
-        font-size: 3.25rem; /* 1.3rem × 2.5 */
+        font-size: 3.25rem;
     }
     .instructions {
         font-size: 1.8rem;
@@ -204,11 +204,11 @@ button:hover {
 
 @media (max-width: 767px) {
     h1 {
-        font-size: 5.5rem; /* 2.2rem × 2.5 */
+        font-size: 5.5rem;
     }
     h1::before,
     h1::after {
-        font-size: 3.75rem; /* 1.5rem × 2.5 */
+        font-size: 3.75rem;
     }
     .instructions {
         font-size: 1.5rem;
@@ -224,6 +224,7 @@ button:hover {
         font-size: 1.5rem;
     }
     .game-board {
+        grid-template-columns: repeat(4, 1fr); /* Change to 4 columns */
         max-width: 360px;
         gap: 5px;
     }
@@ -245,7 +246,7 @@ button:hover {
         padding: 6px;
     }
     h1 {
-        font-size: 4.5rem; /* Adjusted for smaller height */
+        font-size: 4.5rem;
         margin: 2px 0;
     }
     h1::before,
@@ -309,8 +310,4 @@ button:hover {
         font-size: 0.7rem;
     }
     button {
-        padding: 5px 10px;
-        font-size: 0.7rem;
-        margin: 2px;
-    }
-}
+        padding: 5px 10
