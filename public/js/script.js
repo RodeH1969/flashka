@@ -16,15 +16,18 @@ const attemptsDisplay = document.getElementById('attempts');
 const attemptsLeftDisplay = document.getElementById('attempts-left');
 const result = document.getElementById('result');
 const resultMessage = document.getElementById('result-message');
+const timesPlayedDisplay = document.getElementById('times-played');
 const shareBtn = document.getElementById('share-btn');
+const restartBtn = document.getElementById('restart-btn');
 const gameOverBox = document.getElementById('game-over-box');
 
 let cards = [];
 let flippedCards = [];
 let matchedPairs = 0;
 let attempts = 0;
-let maxAttempts = 24;
+let maxAttempts = 29;
 let gameOver = false;
+let playCount = 0;
 
 // Get gameId from URL query parameter (e.g., ?gameId=04/06/25)
 const urlParams = new URLSearchParams(window.location.search);
@@ -43,6 +46,7 @@ console.log('Game ID:', gameId);
 Math.seedrandom(gameId);
 
 function initGame() {
+    playCount++;
     const cardImages = [...images, ...images];
     cardImages.sort(() => Math.random() - 0.5);
 
@@ -78,6 +82,7 @@ function initGame() {
     attemptsDisplay.textContent = attempts;
     attemptsLeftDisplay.textContent = maxAttempts;
     result.style.display = 'none';
+    timesPlayedDisplay.textContent = '';
 }
 
 function flipCard(card) {
@@ -124,49 +129,51 @@ function checkMatch() {
 function endGame(won) {
     gameOver = true;
     result.style.display = 'block';
-    const score = won ? `${attempts}/24` : 'Unsolved/24';
+    const score = won ? `${attempts}/29` : 'Unsolved/29';
     let resultText = `Your score: ${score}\n`;
     let scoreEmoji = '';
     let resultLine = '';
 
     if (!won) {
-        resultLine = '🔹 Unsolved in 24 = Better luck tomorrow 🙃';
+        resultLine = '🔹 Unsolved in 29 = Better luck tomorrow 🙃';
         scoreEmoji = '🙃';
-    } else if (attempts === 10) {
-        resultLine = '🔹 10 = Perfect 🎯';
-        scoreEmoji = '🎯';
-    } else if (attempts >= 11 && attempts <= 14) {
-        resultLine = '🔹 11–14 = Genius 🧠';
+    } else if (attempts >= 10 && attempts <= 15) {
+        resultLine = '🔹 10–15 = Genius 🧠';
         scoreEmoji = '🧠';
-    } else if (attempts >= 15 && attempts <= 18) {
-        resultLine = '🔹 15–18 = Strong 💪';
+    } else if (attempts >= 16 && attempts <= 19) {
+        resultLine = '🔹 16–19 = Elite 💪';
         scoreEmoji = '💪';
-    } else if (attempts >= 19 && attempts <= 21) {
-        resultLine = '🔹 19–21 = Good 👍';
+    } else if (attempts >= 20 && attempts <= 24) {
+        resultLine = '🔹 20–24 = Strong 👍';
         scoreEmoji = '👍';
-    } else if (attempts >= 22 && attempts <= 23) {
-        resultLine = '🔹 22–23 = Well Done 🌟';
+    } else if (attempts >= 25 && attempts <= 29) {
+        resultLine = '🔹 25–29 = Good 🌟';
         scoreEmoji = '🌟';
-    } else if (attempts === 24) {
-        resultLine = '🔹 24 = Completed 🏆';
-        scoreEmoji = '🏆';
     }
 
     resultText += resultLine;
     resultMessage.textContent = resultText;
 
+    // Display times played with the number in red and bold
+    timesPlayedDisplay.innerHTML = `Times played: <span style="color: red; font-weight: bold;">${playCount}</span>`;
+
     const prizeMessage = "1st to score <19 and SMS officials wins $20 Dan's card 🍾";
-    const message = `FLASHKA – GAME OVER 🔚\nYour score: ${score} ${scoreEmoji}\n**${prizeMessage}**\n\n🔹 10 = Perfect 🎯\n🔹 11–14 = Genius 🧠\n🔹 15–18 = Strong 💪\n🔹 19–21 = Good 👍\n🔹 22–23 = Well Done 🌟\n🔹 24 = Completed 🏆\n🔹 Unsolved in 24 = Better luck tomorrow 🙃\nGame ID: ${gameId}`;
+    const timesPlayedMessage = `Times played: ${playCount}`;
+    const message = `FLASHKA – GAME OVER 🔚\nYour score: ${score} ${scoreEmoji}\n${timesPlayedMessage}\n**${prizeMessage}**\n\n🔹 10–15 = Genius 🧠\n🔹 16–19 = Elite 💪\n🔹 20–24 = Strong 👍\n🔹 25–29 = Good 🌟\n🔹 Unsolved in 29 = Better luck tomorrow 🙃\nGame ID: ${gameId}`;
     const smsLink = `sms:+61459754708?body=${encodeURIComponent(message)}`;
     shareBtn.setAttribute('data-sms-link', smsLink);
 
     // Display the message in the game over box with HTML for styling
-    gameOverBox.innerHTML = message.replace(prizeMessage, `<span class="prize-message">${prizeMessage}</span>`);
+    gameOverBox.innerHTML = message
+        .replace(prizeMessage, `<span class="prize-message">${prizeMessage}</span>`)
+        .replace(timesPlayedMessage, `Times played: <span style="color: red; font-weight: bold;">${playCount}</span>`);
 }
 
 shareBtn.addEventListener('click', () => {
     const smsLink = shareBtn.getAttribute('data-sms-link');
     window.location.href = smsLink;
 });
+
+restartBtn.addEventListener('click', initGame);
 
 initGame();
